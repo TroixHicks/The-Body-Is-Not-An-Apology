@@ -56,7 +56,19 @@ module.exports = function(app, passport, db) {
         res.send('Message deleted!')
       })
     })
-
+// the routes for sonya's ability to post
+app.get('/sonjasPage', function(req, res) {
+  res.render('sonjasPage.ejs');
+});
+// app.get('/sonjasPage', isLoggedIn, function(req, res) {
+//         db.collection('messages').find().toArray((err, result) => {
+//           if (err) return console.log(err)
+//           res.render('profile.ejs', {
+//             user : req.user,
+//             messages: result
+//           })
+//         })
+//     });
 // =============================================================================
 // AUTHENTICATE (FIRST LOGIN) ==================================================
 // =============================================================================
