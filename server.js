@@ -5,6 +5,15 @@
 var express  = require('express');
 var app      = express();
 var port     = process.env.PORT || 8080;
+
+require("dotenv").config()
+
+// multer
+const multer = require('multer')
+const path = require('path')
+
+
+
 const MongoClient = require('mongodb').MongoClient
 var mongoose = require('mongoose');
 var passport = require('passport');
@@ -16,6 +25,8 @@ var bodyParser   = require('body-parser');
 var session      = require('express-session');
 
 var configDB = require('./config/database.js');
+const { ObjectId } = require('mongodb');
+// const { ObjectID } = require('bson');
 
 var db
 
@@ -23,7 +34,7 @@ var db
 mongoose.connect(configDB.url, (err, database) => {
   if (err) return console.log(err)
   db = database
-  require('./app/routes.js')(app, passport, db);
+  require('./app/routes.js')(app, passport, db, multer, ObjectId);
 }); // connect to our database
 
 require('./config/passport')(passport); // pass passport for configuration
