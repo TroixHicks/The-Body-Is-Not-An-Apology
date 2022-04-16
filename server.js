@@ -5,6 +5,9 @@
 var express  = require('express');
 var app      = express();
 var port     = process.env.PORT || 8080;
+
+require("dotenv").config()
+
 const MongoClient = require('mongodb').MongoClient
 var mongoose = require('mongoose');
 var passport = require('passport');

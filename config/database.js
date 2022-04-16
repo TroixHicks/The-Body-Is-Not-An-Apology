@@ -1,6 +1,6 @@
 // config/database.js
 module.exports = {
 
-    'url' : 'mongodb+srv://demo:demo@cluster0.q2ojb.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', 
-    'dbName': 'demo'
+    'url' : process.env.DB_URL,
+    'dbName': 'the-body-is-not-an-apology'
 };
