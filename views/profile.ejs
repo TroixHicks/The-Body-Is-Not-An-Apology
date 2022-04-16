@@ -35,6 +35,19 @@
 
             </div>
         </div>
+        <div class="user-avatar">
+          <% if(user.local.img !== ""){ %>
+            <img src="<%=user.local.img %>" style="width:200px" class="profileImg">
+          <% } else { %>
+            <img src="/img/main.png" style="width: 200px" class="profileImg">
+            <% } %>              
+          </div>
+          <form action="/imageUpload" method="POST" enctype="multipart/form-data">
+            <div class="uploadImg">
+              <input type="file" id="image" name="file-to-upload" value="" class="profilePic" required>
+            </div>
+            <button type="submit" class="buttons btn-sm">UPLOAD</button>
+          </form>
         <div class="col-sm-6">
           <h3>Messages</h3>
           <ul class="messages">

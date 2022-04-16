@@ -1,5 +1,16 @@
-module.exports = function(app, passport, db) {
+module.exports = function(app, passport, db, multer, ObjectId) {
 
+   //MULTER =======================================================================
+   const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'public/uploads')
+    },
+    filename: (req, file, cb) => {
+      cb(null, file.fieldname + '-' + Date.now() + ".png")
+    }
+  });
+
+  let upload = multer({ storage: storage });
 // normal routes ===============================================================
 
     // show the home page (will also have our login links)
@@ -25,6 +36,32 @@ module.exports = function(app, passport, db) {
         res.redirect('/');
     });
 
+//multer ===============================================================
+app.post('/imageUpload', upload.single('file-to-upload'), (req, res, next) => {
+  addImage(db, req, '/uploads/' + req.file.filename, () => {
+    res.redirect('/profile')
+  });
+});
+
+var addImage = function (db, req, filePath, callback) {
+  var collection = db.collection('users');
+  var uId = ObjectId(req.session.passport.user)
+  collection.findOneAndUpdate({
+    "_id": uId
+  }, {
+    $set: {
+      "local.img": filePath
+    }
+  }, {
+    sort: {
+      _id: -1
+    },
+    upsert: false
+  }, (err, result) => {
+    if (err) return res.send(err)
+    callback(result)
+  })
+}
 // message board routes ===============================================================
 
     app.post('/messages', (req, res) => {
