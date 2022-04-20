@@ -14,6 +14,8 @@
         <a href="/logout" class="btn btn-default btn-sm">Logout</a>
     </div>
 
+    <a href="/homePage">HomePage</a>
+
     <div>
       <h5 style="background-color: aqua;"> hellllooooo</h5>
     </div> 
@@ -24,7 +26,7 @@
         <div class="col-sm-6">
             <div class="well">
                 <h3><span class="fa fa-user"></span> Local</h3>
-
+<!-- need to create hidden variables thst holds her email tocompare to for validation -->
                 <% if (user.local.email) { %>
                     <p>
                         <strong>id</strong>: <%= user._id %><br>
@@ -56,8 +58,9 @@
 
           <h2>Add a message</h2>
         <% if (user.local.email) { %>
-          <form action="/messages" method="POST">
+          <form action="/sonjasPostings" method="POST">
             <input type="hidden" value="<%= user._id %>">
+            <!-- <label for=""></label> -->
             <input type="text" value="<%= user.local.email %>" name="name">
             <input type="text" placeholder="Title" name="Title">
             <input type="text" placeholder="message" name="msg">

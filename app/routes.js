@@ -13,7 +13,7 @@ module.exports = function(app, passport, db, multer, ObjectId) {
   let upload = multer({ storage: storage });
 // normal routes ===============================================================
 
-    // show the home page (will also have our login links)
+    // show the landing page(will also have our login links)
     app.get('/', function(req, res) {
         res.render('index.ejs');
         
@@ -93,19 +93,41 @@ var addImage = function (db, req, filePath, callback) {
         res.send('Message deleted!')
       })
     })
-// the routes for sonya's ability to post
-app.get('/sonjasPage', function(req, res) {
-  res.render('sonjasPage.ejs');
-});
-// app.get('/sonjasPage', isLoggedIn, function(req, res) {
-//         db.collection('messages').find().toArray((err, result) => {
-//           if (err) return console.log(err)
-//           res.render('profile.ejs', {
-//             user : req.user,
-//             messages: result
-//           })
-//         })
-//     });
+// the routes for sonya's ability to post ===============================================================
+app.get('/sonjasPage', isLoggedIn, function(req, res) {
+        db.collection('messages').find().toArray((err, result) => {
+          if (err) return console.log(err)
+          res.render('sonjasPage.ejs', {
+            user : req.user,
+            messages: result
+          })
+        })
+    });
+
+app.post('/messages', (req, res) => {
+      db.collection('messages').insertOne({name: req.body.name, msg: req.body.msg, thumbUp: 0, thumbDown:0}, (err, result) => {
+        if (err) return console.log(err)
+        console.log('saved to database')
+        res.redirect('/profile')
+      })
+    })
+//routes for homepage ==============================================================
+
+app.get('/homePage', isLoggedIn, function(req, res) {
+        db.collection('messages').find().toArray((err, result) => {
+          if (err) return console.log(err)
+          res.render('homePage.ejs', {
+            user : req.user,
+            messages: result
+          })
+        })
+    });
+
+    // would we consider making another collection for sonja to post things? i think it would be easier than posting it all in one collection and having to have validation logic in the server side!. 
+
+
+    
+
 // =============================================================================
 // AUTHENTICATE (FIRST LOGIN) ==================================================
 // =============================================================================
