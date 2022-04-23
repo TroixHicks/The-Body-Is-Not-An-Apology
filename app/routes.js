@@ -94,31 +94,32 @@ var addImage = function (db, req, filePath, callback) {
       })
     })
 // the routes for sonya's ability to post ===============================================================
-app.get('/sonjasPage', isLoggedIn, function(req, res) {
-        db.collection('messages').find().toArray((err, result) => {
+app.get('/sonyasPage', isLoggedIn, function(req, res) {
+        db.collection('sonyasPostings').find().toArray((err, result) => {
           if (err) return console.log(err)
-          res.render('sonjasPage.ejs', {
+          res.render('sonyasPage.ejs', {
             user : req.user,
             messages: result
           })
         })
     });
 
-app.post('/messages', (req, res) => {
-      db.collection('messages').insertOne({name: req.body.name, msg: req.body.msg, thumbUp: 0, thumbDown:0}, (err, result) => {
+app.post('/sonyasPosts', (req, res) => {
+      db.collection('sonyasPostings').insertOne({name: req.body.name, msg: req.body.msg, title: req.body.title, description: req.body.description, thumbUp: 0, thumbDown:0}, (err, result) => {
         if (err) return console.log(err)
         console.log('saved to database')
-        res.redirect('/profile')
+        res.redirect('/homePage')
       })
     })
 //routes for homepage ==============================================================
 
 app.get('/homePage', isLoggedIn, function(req, res) {
-        db.collection('messages').find().toArray((err, result) => {
+        db.collection('sonyasPostings').find().toArray((err, result) => {
           if (err) return console.log(err)
           res.render('homePage.ejs', {
             user : req.user,
-            messages: result
+            // messages: result,
+            sonyasPostings: result,
           })
         })
     });

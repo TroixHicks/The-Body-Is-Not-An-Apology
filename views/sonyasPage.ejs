@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>Sonja's Post Page</title>
+    <title>Sonya's Post Page</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
     <link rel="stylesheet" href="style.css">
@@ -10,7 +10,7 @@
 <div class="container">
 
     <div class="page-header text-center">
-        <h1><span class="fa fa-anchor"></span> Sonja's Posting Page</h1>
+        <h1><span class="fa fa-anchor"></span> Sonya's Posting Page</h1>
         <a href="/logout" class="btn btn-default btn-sm">Logout</a>
     </div>
 
@@ -73,12 +73,13 @@
 
           <h2>Add a message</h2>
         <% if (user.local.email) { %>
-          <form action="/sonjasPostings" method="POST">
+          <form action="/sonyasPosts" method="POST">
             <input type="hidden" value="<%= user._id %>">
             <!-- <label for=""></label> -->
             <input type="text" value="<%= user.local.email %>" name="name">
-            <input type="text" placeholder="Title" name="Title">
+            <input type="text" placeholder="Title" name="title">
             <input type="text" placeholder="message" name="msg">
+            <input type="file" id="image" name="file-to-upload" value="" class="profilePic" multiple required>
             <textarea rows="6" cols="60" name="description"></textarea>
             <button type="submit">Submit</button>
           </form>
