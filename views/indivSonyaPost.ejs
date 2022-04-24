@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>home page</title>
+    <title>Sonya's Individual Post</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
     <link rel="stylesheet" href="style.css">
@@ -12,7 +12,7 @@
     <div class="container">
 
         <div class="page-header text-center">
-            <h1> home page</h1>
+            <h1> Sonya's Individual Post</h1>
             <a href="/logout" class="btn btn-default btn-sm">Logout</a>
         </div>
         <a href="/homePage">HomePage</a>
@@ -21,7 +21,8 @@
 
             <!-- LOCAL INFORMATION -->
             <!-- <div class="col-sm-6">
-                <div class="well">
+                <div class="well"> 
+                    this could be turned into a comment section form for the post itself. Idk if that's too much
                     <h3><span class="fa fa-user"></span> Local</h3>
 
                     <% if (user.local.email) { %>
@@ -51,28 +52,31 @@
                 </div>
                 <button type="submit" class="buttons btn-sm">UPLOAD</button>
             </form> -->
+
+
+            <!-- I will leave this up to the front end team to styyyyle -->
             <div class="col-sm-6">
                 <h3>Messages</h3>
                 <ul class="messages">
-                    <% for(var i=0; i<sonyasPostings.length; i++) {%>
                         <li class="message">
-                            
-                            <a href="/indivSonyaPost?id=<%=sonyasPostings[i]._id%>">
-                                <span>
-                                    <%= sonyasPostings[i].title %>
-                                </span>
-                            </a>
-                            
                             <span>
-                                <%= sonyasPostings[i].msg %>
+                                <%= sonyasPostings.name %>
                             </span>
-                            
+                            <span>
+                                <%= sonyasPostings.title %>
+                            </span>
+                            <span>
+                                <%= sonyasPostings.msg %>
+                            </span>
+                            <span>
+                                <%= sonyasPostings.description %>
+                            </span>
                             <span><i class="fa fa-thumbs-up" aria-hidden="true"></i></span>
                             <span><i class="fa fa-thumbs-down" aria-hidden="true"></i></span>
-                            <span><i data-id="<%= sonyasPostings[i]._id %>" class="fa fa-plus" aria-hidden="true"></i></span>
+                            <span><i class="fa fa-plus" aria-hidden="true"></i></span>
                             <span><i class="fa fa-trash" aria-hidden="true"></i></span>
                         </li>
-                        <% } %>
+                    
                 </ul>
 
                 <!-- <h2>Add a message</h2>
@@ -85,9 +89,9 @@
             </div>
             <% } %> -->
 
-        </div>
+            </div>
 
-        <script src="main.js"></script>
+            <script src="main.js"></script>
 
 </body>
 

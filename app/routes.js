@@ -1,4 +1,4 @@
-module.exports = function(app, passport, db, multer, ObjectId) {
+module.exports = function(app, passport, db, multer, ObjectId, sonyaEntry) {
 
    //MULTER =======================================================================
    const storage = multer.diskStorage({
@@ -94,37 +94,82 @@ var addImage = function (db, req, filePath, callback) {
       })
     })
 // the routes for sonya's ability to post ===============================================================
-app.get('/sonjasPage', isLoggedIn, function(req, res) {
-        db.collection('messages').find().toArray((err, result) => {
+app.get('/sonyasPage', isLoggedIn, function(req, res) {
+        db.collection('sonyasPostings').find().toArray((err, result) => {
           if (err) return console.log(err)
-          res.render('sonjasPage.ejs', {
+          res.render('sonyasPage.ejs', {
             user : req.user,
             messages: result
           })
         })
     });
 
-app.post('/messages', (req, res) => {
-      db.collection('messages').insertOne({name: req.body.name, msg: req.body.msg, thumbUp: 0, thumbDown:0}, (err, result) => {
+app.post('/sonyasPosts', (req, res) => {
+      db.collection('sonyasPostings').insertOne({name: req.body.name, msg: req.body.msg, title: req.body.title, description: req.body.description, thumbUp: 0, thumbDown:0}, (err, result) => {
         if (err) return console.log(err)
         console.log('saved to database')
-        res.redirect('/profile')
+        res.redirect('/homePage')
       })
     })
+
+
+// routes for individual posting pages ==============================================================
+app.get('/indivSonyaPost', isLoggedIn, function (req, res) {
+
+    let postId = req.query.id
+    console.log('postid =', postId, req)
+    db.collection('sonyasPostings').findOne({ _id: ObjectId(postId) }, (err, result) => {
+      if (err) return console.log(err)
+        console.log(result)
+        res.render('indivSonyaPost.ejs', {
+          user: req.user,
+          sonyasPostings: result
+        })
+      })
+  });
 //routes for homepage ==============================================================
 
 app.get('/homePage', isLoggedIn, function(req, res) {
-        db.collection('messages').find().toArray((err, result) => {
+        db.collection('sonyasPostings').find().toArray((err, result) => {
           if (err) return console.log(err)
           res.render('homePage.ejs', {
             user : req.user,
-            messages: result
+            sonyasPostings: result,
           })
         })
     });
 
-    // would we consider making another collection for sonja to post things? i think it would be easier than posting it all in one collection and having to have validation logic in the server side!. 
+// users route to save post
 
+//saving savesonya post
+
+app.put('/saveSonyaPost', isLoggedIn, (req, res) => {
+    db.collection('sonyasPostings')
+      .findOneAndUpdate({ _id: ObjectId(req.body.postId) }, {
+        $addToSet: {
+          interestedUsers: ObjectId(req.user.id)
+        }
+      }, {
+        sort: { _id: -1 },
+        upsert: false
+      }, (err, result) => {
+        if (err) return res.send(err)
+        res.send(result)
+      })
+  })
+
+  // rendering her posts on a page
+
+  app.get('/savedPosts', isLoggedIn, function (req, res) {
+    db.collection('sonyasPostings').find({interestedUsers: ObjectId(req.user.id)}).toArray((err, result) => {
+      if (err) return console.log(err)
+      console.log(result)
+      res.render('savedPosts.ejs', {
+        user : req.user,
+        sonyasPostings: result,
+      })
+    })
+  });
 
     
 
@@ -184,4 +229,14 @@ function isLoggedIn(req, res, next) {
         return next();
 
     res.redirect('/');
+}
+
+// route middleware to validate if it's sonya so only she can post
+function isSonyaTheUser(req, res, next) {
+//logic that checks if the user's id is correctly matching sonyas
+  if (req.user.email == sonyaEntry)
+//allows them to continue with where they were trying to do. 
+    return next();
+//will redirect user to profile if they are not sonya
+  res.redirect('/profile');
 }
