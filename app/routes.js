@@ -114,19 +114,45 @@ app.post('/sonyasPosts', (req, res) => {
 
 
 // routes for individual posting pages ==============================================================
-app.get('/indivSonyaPost', isLoggedIn, function (req, res) {
+app.get('/indivSonyaPost', isLoggedIn, async function (req, res) {
+try {   
+  let postId = req.query.id
+    console.log('postid =', postId)
+    const result = await db.collection('sonyasPostings').findOne({ _id: ObjectId(postId) })
+    const commentResult = await db.collection('comments').find({postId: ObjectId(postId) }).toArray()
 
-    let postId = req.query.id
-    console.log('postid =', postId, req)
-    db.collection('sonyasPostings').findOne({ _id: ObjectId(postId) }, (err, result) => {
-      if (err) return console.log(err)
-        console.log(result)
-        res.render('indivSonyaPost.ejs', {
-          user: req.user,
-          sonyasPostings: result
+      // if (err) return console.log(err)
+      // console.log("result =", result, "end result")
+      res.render('indivSonyaPost.ejs', {
+        user: req.user,
+        sonyasPost: result,
+        comments: commentResult
         })
-      })
+      } catch (err) {
+        console.log(error)
+      }
+  
   });
+
+
+
+// route for commenting on sonyas page
+
+app.post('/makeCommentSonyaPost/:id', (req, res) => {
+  console.log("this is the body" + req.body)
+
+    // let user = req.user.userName
+    db.collection('comments').insertOne({ 
+      comment: req.body.comment, 
+      postedBy: req.body.userEmail, 
+      postedById: req.user._id, 
+      postId: ObjectId(req.params.id)}, 
+      (err, result) => {
+      if (err) return console.log(err)
+      console.log('saved to database', result)
+      res.redirect(`/indivSonyaPost?id=${req.params.id}`)
+    })
+  })
 //routes for homepage ==============================================================
 
 app.get('/homePage', isLoggedIn, function(req, res) {
@@ -170,6 +196,7 @@ app.put('/saveSonyaPost', isLoggedIn, (req, res) => {
       })
     })
   });
+
 
     
 
@@ -234,7 +261,7 @@ function isLoggedIn(req, res, next) {
 // route middleware to validate if it's sonya so only she can post
 function isSonyaTheUser(req, res, next) {
 //logic that checks if the user's id is correctly matching sonyas
-  if (req.user.email == sonyaEntry)
+  if (req.user.local.email == sonyaEntry)
 //allows them to continue with where they were trying to do. 
     return next();
 //will redirect user to profile if they are not sonya
