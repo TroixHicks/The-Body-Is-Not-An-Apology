@@ -114,43 +114,28 @@ app.post('/sonyasPosts', (req, res) => {
 
 
 // routes for individual posting pages ==============================================================
-app.get('/indivSonyaPost', isLoggedIn, function (req, res) {
+app.get('/indivSonyaPost', isLoggedIn, async function (req, res) {
+try {   
+  let postId = req.query.id
+    console.log('postid =', postId)
+    const result = await db.collection('sonyasPostings').findOne({ _id: ObjectId(postId) })
+    const commentResult = await db.collection('comments').find({postId: ObjectId(postId) }).toArray()
 
-    let postId = req.query.id
-    console.log('postid =', postId, req)
-    db.collection('sonyasPostings').findOne({ _id: ObjectId(postId) }, (err, result) => {
-      console.log(result)
-      if (err) return console.log(err)
-        db.collection('comments').find({ postId: ObjectId(postId) }).toArray((err, comments) => {
-        if (err) return console.log(err)
-
-        res.render('indivSonyaPost.ejs', {
-          user: req.user,
-          sonyasPostings: result,
-          comments: comments
+      // if (err) return console.log(err)
+      // console.log("result =", result, "end result")
+      res.render('indivSonyaPost.ejs', {
+        user: req.user,
+        sonyasPost: result,
+        comments: commentResult
         })
-        
-      })
+      } catch (err) {
+        console.log(error)
+      }
+  
   });
 })
 
-  // app.get('/indivSonyaPost', isLoggedIn, function (req, res) {
 
-  //   let postId = req.query.id
-  //   console.log('postid =', postId, req)
-  //   db.collection('housingPost').findOne({ _id: ObjectId(postId) }, (err, result) => {
-  //     if (err) return console.log(err)
-  //     db.collection('comments').find({ postId: ObjectId(postId) }).toArray((err, comments) => {
-  //       if (err) return console.log(err)
-  //       console.log(result)
-  //       res.render('housingPost.ejs', {
-  //         comments: comments,
-  //         user: req.user,
-  //         housingPost: result
-  //       })
-  //     })
-  //   })
-  // });
 
 // route for commenting on sonyas page
 
@@ -158,10 +143,15 @@ app.post('/makeCommentSonyaPost/:id', (req, res) => {
   console.log("this is the body" + req.body)
 
     // let user = req.user.userName
-    db.collection('comments').insertOne({ comment: req.body.comment, postedBy: req.body.userEmail, postedById: req.user._id, postId: ObjectId(req.params.id) }, (err, result) => {
+    db.collection('comments').insertOne({ 
+      comment: req.body.comment, 
+      postedBy: req.body.userEmail, 
+      postedById: req.user._id, 
+      postId: ObjectId(req.params.id)}, 
+      (err, result) => {
       if (err) return console.log(err)
-      console.log('saved to database')
-      res.redirect(`/indivSonyaPost`)
+      console.log('saved to database', result)
+      res.redirect(`/indivSonyaPost?id=${req.params.id}`)
     })
   })
 //routes for homepage ==============================================================
