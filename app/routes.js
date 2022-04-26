@@ -119,14 +119,20 @@ app.get('/indivSonyaPost', isLoggedIn, function (req, res) {
     let postId = req.query.id
     console.log('postid =', postId, req)
     db.collection('sonyasPostings').findOne({ _id: ObjectId(postId) }, (err, result) => {
+      console.log(result)
       if (err) return console.log(err)
-        console.log(result)
+        db.collection('comments').find({ postId: ObjectId(postId) }).toArray((err, comments) => {
+        if (err) return console.log(err)
+
         res.render('indivSonyaPost.ejs', {
           user: req.user,
-          sonyasPostings: result
+          sonyasPostings: result,
+          comments: comments
         })
+        
       })
   });
+})
 
   // app.get('/indivSonyaPost', isLoggedIn, function (req, res) {
 
